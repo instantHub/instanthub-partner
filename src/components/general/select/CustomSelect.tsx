@@ -25,7 +25,8 @@ interface CustomSelectProps<T = any> {
 
 // Custom hook for click outside
 const useClickOutside = (
-  ref: React.RefObject<HTMLElement>,
+  // FIX: Explicitly allow 'null' to match useRef behavior
+  ref: React.RefObject<HTMLElement | null>,
   handler: () => void
 ) => {
   useEffect(() => {

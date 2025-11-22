@@ -105,12 +105,12 @@ export const Button: React.FC<ButtonProps> = ({
     <button className={buttonClasses} disabled={disabled || loading} {...props}>
       {/* Left icon */}
       {leftIcon && !loading && (
-        <span className="mr-1 flex-shrink-0">{leftIcon}</span>
+        <span className="mr-1 shrink-0">{leftIcon}</span>
       )}
 
       {/* Loading spinner */}
       {loading && (
-        <span className="mr-2 flex-shrink-0">
+        <span className="mr-2 shrink-0">
           <svg
             className="animate-spin h-4 w-4"
             xmlns="http://www.w3.org/2000/svg"
@@ -139,7 +139,7 @@ export const Button: React.FC<ButtonProps> = ({
 
       {/* Right icon */}
       {rightIcon && !loading && (
-        <span className="ml-1 flex-shrink-0">{rightIcon}</span>
+        <span className="ml-1 shrink-0">{rightIcon}</span>
       )}
     </button>
   );

@@ -37,7 +37,7 @@ export const CardTitle: React.FC<CardProps> = ({
     <h3
       className={`flex gap-2 items-center text-lg font-semibold text-slate-900 ${className}`}
     >
-      {icon && <span className="mr-1 flex-shrink-0">{icon}</span>}
+      {icon && <span className="mr-1 shrink-0">{icon}</span>}
       {children}
     </h3>
   );

@@ -1,12 +1,10 @@
-export { Button } from "./button";
-export { FlexBox } from "./flexbox";
-export { FormInput } from "./formInput";
-export { Typography } from "./typography";
+export * from "./button";
+export * from "./flexbox";
+export * from "./formInput";
+export * from "./typography";
 export * from "./modal";
 export * from "./checkbox";
 export * from "./select";
-export * from "./stepper";
 export * from "./datepicker";
 export * from "./dropdown";
 export * from "./statsCard";
-export * from "./statusBox";

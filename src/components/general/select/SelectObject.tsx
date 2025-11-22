@@ -2,11 +2,13 @@ import React, { useState, useRef, useEffect, useCallback } from "react";
 
 // A custom hook to detect clicks outside a component
 const useClickOutside = (
-  ref: React.RefObject<HTMLElement>,
+  // FIX: Explicitly allow 'null' to match useRef behavior
+  ref: React.RefObject<HTMLElement | null>,
   handler: () => void
 ) => {
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
+      // Check if ref exists and if the click target is NOT inside the component
       if (ref.current && !ref.current.contains(event.target as Node)) {
         handler();
       }
@@ -47,6 +49,7 @@ export function SelectObject<T extends Record<string, any>>({
   required = false,
 }: SelectObjectProps<T>) {
   const [isOpen, setIsOpen] = useState(false);
+  // This matches the type expected by useClickOutside now
   const selectRef = useRef<HTMLDivElement>(null);
 
   // Close the dropdown when clicking outside of it

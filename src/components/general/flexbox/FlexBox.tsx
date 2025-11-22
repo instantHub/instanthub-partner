@@ -1,3 +1,4 @@
+import React from "react";
 import {
   alignContentMapper,
   alignMapper,
@@ -17,7 +18,8 @@ import {
   ResponsiveValue,
 } from "./types";
 
-interface FlexBoxProps {
+// FIX 1: Extend HTMLAttributes to support ...props safely
+interface FlexBoxProps extends React.HTMLAttributes<HTMLElement> {
   children: React.ReactNode;
   direction?: ResponsiveValue<FlexDirection>;
   justify?: ResponsiveValue<JustifyContent>;
@@ -25,9 +27,9 @@ interface FlexBoxProps {
   alignContent?: ResponsiveValue<AlignContent>;
   wrap?: ResponsiveValue<FlexWrap>;
   gap?: ResponsiveValue<Gap>;
-  fullWidth?: Boolean;
+  fullWidth?: boolean; // FIX 2: Use lowercase 'boolean' primitive
   className?: string;
-  as?: keyof JSX.IntrinsicElements;
+  as?: React.ElementType; // FIX 3: The Critical Fix. ReactNode -> ElementType
   style?: React.CSSProperties;
 }
 
