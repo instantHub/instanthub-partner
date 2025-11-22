@@ -1,7 +1,48 @@
+// {
+//   "files": [],
+//   "references": [
+//     { "path": "./tsconfig.app.json" },
+//     { "path": "./tsconfig.node.json" }
+//   ]
+// }
+
 {
-  "files": [],
-  "references": [
-    { "path": "./tsconfig.app.json" },
-    { "path": "./tsconfig.node.json" }
-  ]
+  "compilerOptions": {
+    "target": "esnext",
+    "useDefineForClassFields": true, // Recommended for Vite
+    "lib": ["DOM", "DOM.Iterable", "ESNext"], // CRITICAL: Adds browser types
+    "allowJs": false,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true, // Helps with some legacy packages
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "module": "esnext",
+    "moduleResolution": "bundler", // "node" is outdated for Vite. Use "bundler"
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true,
+    "jsx": "react-jsx",
+    "types": ["vite/client"], // Correct
+
+    "baseUrl": ".",
+    "paths": {
+      "@routes": ["src/routes/index.ts"],
+      "@pages/*": ["src/pages/*"],
+      "@components/*": ["src/components/*"],
+      "@features/*": ["src/features/*"],
+      "@api": ["src/features/api/index.ts"],
+      "@utils/*": ["src/utils/*"],
+      "@hooks": ["src/hooks/index.ts"],
+      "@blogs": ["src/pages/blogs/index.ts"],
+      "@icons": ["src/icons/index.ts"],
+      "@types": ["src/utils/types/index.ts"],
+      "@constants": ["src/utils/constants/index.ts"],
+      "@services/*": ["src/services/*"],
+      "@partner/*": ["src/pages/partner/*"],
+      "@executive/*": ["src/pages/executive/*"]
+    }
+  },
+  "include": ["src"],
+  "exclude": ["node_modules"]
 }

@@ -31,7 +31,9 @@ export default {
       animation: {
         marquee: "marquee 30s linear infinite",
         "marquee-fast": "marquee-fast 25s linear infinite",
+        "fade-in-up": "fadeInUp 0.5s ease-out forwards",
       },
+
       keyframes: {
         marquee: {
           "0%": { transform: "translateX(100%)" },
@@ -40,6 +42,10 @@ export default {
         "marquee-fast": {
           "0%": { transform: "translateX(100%)" },
           "100%": { transform: "translateX(-450%)" },
+        },
+        fadeInUp: {
+          "0%": { opacity: "0", transform: "translateY(20px)" },
+          "100%": { opacity: "1", transform: "translateY(0)" },
         },
       },
     },
