@@ -1,5 +1,5 @@
-import { FormEvent, useState } from "react";
-import { IdCard, PersonStanding, Mail, Lock, Eye, EyeOff } from "lucide-react";
+import { useState } from "react";
+import { Mail, Lock } from "lucide-react";
 import { AVAILABLE_ROLE, TAvailableRole } from "@utils/constants";
 import { FormInput } from "@components/general";
 
@@ -13,7 +13,6 @@ export const LoginPage = ({ role }: LoginPageProps) => {
 
   const isPartner = role === AVAILABLE_ROLE.PARTNER;
 
-  // Dynamic theme based on role
   const theme = isPartner
     ? "text-indigo-600 focus:ring-indigo-500 bg-indigo-600 hover:bg-indigo-700"
     : "text-emerald-600 focus:ring-emerald-500 bg-emerald-600 hover:bg-emerald-700";
@@ -27,7 +26,6 @@ export const LoginPage = ({ role }: LoginPageProps) => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     console.log(`Logging in as ${role}`, formData);
-    // Add your login logic here
   };
 
   return (
