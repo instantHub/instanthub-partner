@@ -50,7 +50,7 @@ export const LoginLandingPage = () => {
 
         {/* Executive Card */}
         <button
-          onClick={() => setCurrentView(AVAILABLE_ROLE.EXECUTIVE)}
+          onClick={() => setCurrentView(AVAILABLE_ROLE.PARTNER_EXECUTIVE)}
           className="group relative flex flex-col items-center p-8 bg-white rounded-3xl shadow-md border-2 border-transparent hover:border-emerald-100 hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 text-left"
         >
           <div className="h-24 w-24 rounded-full bg-emerald-50 flex items-center justify-center text-emerald-600 mb-6 group-hover:scale-110 transition-transform duration-300">
