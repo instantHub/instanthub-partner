@@ -1,13 +1,20 @@
 import { useState } from "react";
 import { Mail, Lock } from "lucide-react";
-import { AVAILABLE_ROLE, TAvailableRole } from "@utils/constants";
+import {
+  AVAILABLE_ROLE,
+  DASHBOARDS_ROUTES_ENUM,
+  TAvailableRole,
+} from "@utils/constants";
 import { FormInput } from "@components/general";
+import { useLoginMutation } from "@features/api";
 
 interface LoginPageProps {
   role: TAvailableRole;
 }
 
 export const LoginPage = ({ role }: LoginPageProps) => {
+  const [login, { isLoading, error }] = useLoginMutation();
+
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({ email: "", password: "" });
 
@@ -17,15 +24,30 @@ export const LoginPage = ({ role }: LoginPageProps) => {
     ? "text-indigo-600 focus:ring-indigo-500 bg-indigo-600 hover:bg-indigo-700"
     : "text-emerald-600 focus:ring-emerald-500 bg-emerald-600 hover:bg-emerald-700";
 
-  const ringTheme = isPartner
-    ? "focus:ring-indigo-500"
-    : "focus:ring-emerald-500";
   const bgSoft = isPartner ? "bg-indigo-50" : "bg-emerald-50";
   const iconColor = isPartner ? "text-indigo-500" : "text-emerald-500";
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
     console.log(`Logging in as ${role}`, formData);
+
+    try {
+      const { email, password } = formData;
+      const result = await login({
+        email,
+        password,
+        role: isPartner
+          ? AVAILABLE_ROLE.PARTNER
+          : AVAILABLE_ROLE.PARTNER_EXECUTIVE,
+      }).unwrap();
+
+      console.log("login result", result);
+
+      window.location.href = DASHBOARDS_ROUTES_ENUM[role];
+    } catch (err) {
+      console.error("Login failed:", err);
+    }
   };
 
   return (

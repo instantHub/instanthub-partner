@@ -1,7 +1,16 @@
+import { ROUTES } from "@routes";
+
+export const BASE_URL = "/api/partners";
+
 export const AVAILABLE_ROLE = {
   PARTNER: "partner",
-  EXECUTIVE: "executive",
+  PARTNER_EXECUTIVE: "partner_executive",
 } as const;
 
 export type TAvailableRole =
   (typeof AVAILABLE_ROLE)[keyof typeof AVAILABLE_ROLE];
+
+export const DASHBOARDS_ROUTES_ENUM = {
+  [AVAILABLE_ROLE.PARTNER]: ROUTES.partner_dashboard,
+  [AVAILABLE_ROLE.PARTNER_EXECUTIVE]: ROUTES.executive_dashboard,
+};

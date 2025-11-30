@@ -3,7 +3,9 @@ export const ROUTES = {
   loginPage: "/dashboard-login",
   accessDenied: "/access-denied",
 
-  dashboard: "/dashboard",
+  partner_dashboard: "/partner/dashboard",
+  executive_dashboard: "/executive/dashboard",
+
   updateProfile: "/update-profile",
 
   ordersList: "/orders",
