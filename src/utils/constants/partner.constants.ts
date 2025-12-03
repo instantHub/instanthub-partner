@@ -11,6 +11,6 @@ export type TAvailableRole =
   (typeof AVAILABLE_ROLE)[keyof typeof AVAILABLE_ROLE];
 
 export const DASHBOARDS_ROUTES_ENUM = {
-  [AVAILABLE_ROLE.PARTNER]: ROUTES.partner_dashboard,
-  [AVAILABLE_ROLE.PARTNER_EXECUTIVE]: ROUTES.executive_dashboard,
+  [AVAILABLE_ROLE.PARTNER]: ROUTES.partner.root,
+  [AVAILABLE_ROLE.PARTNER_EXECUTIVE]: ROUTES.partner_executive.root,
 };

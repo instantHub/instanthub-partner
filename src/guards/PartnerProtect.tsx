@@ -8,15 +8,20 @@ interface AdminProtectedRouteProps {
   children: React.ReactNode;
 }
 
-const ProtectedRoute: React.FC<AdminProtectedRouteProps> = ({ children }) => {
-  const { data: user, isLoading, isError, isSuccess } = useUserProfileQuery();
+export const PartnerProtected: React.FC<AdminProtectedRouteProps> = ({
+  children,
+}) => {
+  console.log("PartnerProtected called..!");
+
+  const { data: user, isLoading, isError } = useUserProfileQuery();
   // console.log("user - AdminProtectedRoute", user, isSuccess);
 
   // const LayoutMap: Record<string, JSX.Element> = {
   const LayoutMap: Record<string, any> = {
     [AVAILABLE_ROLE.PARTNER]: <>{children}</>,
+    // [AVAILABLE_ROLE.PARTNER_EXECUTIVE]: <>{children}</>,
     [AVAILABLE_ROLE.PARTNER_EXECUTIVE]: (
-      <Navigate to={ROUTES.executive_dashboard} replace />
+      <Navigate to={ROUTES.partner_executive.root} replace />
     ),
   };
 
@@ -39,5 +44,3 @@ const ProtectedRoute: React.FC<AdminProtectedRouteProps> = ({ children }) => {
   // ✅ Authenticated and authorized
   return layout;
 };
-
-export default ProtectedRoute;

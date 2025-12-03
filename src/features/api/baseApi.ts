@@ -8,6 +8,7 @@ import {
   ORDER_DETAIL_API_TAG,
   ORDER_STATS_API_TAG,
   ORDERS_API_TAG,
+  UNASSIGNED_ORDERS_TAG,
 } from "./orders/constants";
 import { PARTNER_API_TAG } from "./auth/constant";
 import { toast } from "react-toastify";
@@ -105,6 +106,11 @@ const baseQueryWithErrorHandling: BaseQueryFn<
 export const baseApi = createApi({
   reducerPath: "baseApi",
   baseQuery: baseQueryWithErrorHandling,
-  tagTypes: [ORDERS_API_TAG, ORDER_DETAIL_API_TAG, ORDER_STATS_API_TAG],
+  tagTypes: [
+    ORDERS_API_TAG,
+    ORDER_DETAIL_API_TAG,
+    ORDER_STATS_API_TAG,
+    UNASSIGNED_ORDERS_TAG,
+  ],
   endpoints: () => ({}),
 });

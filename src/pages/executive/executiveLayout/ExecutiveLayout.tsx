@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Outlet, NavLink, useLocation } from "react-router-dom";
+import { Outlet, NavLink, useLocation, useNavigate } from "react-router-dom";
 import { ROUTES } from "@routes";
 import { Home, LogOut, Settings, Users } from "lucide-react";
 import { useLogoutMutation, useUserProfileQuery } from "@features/api";
@@ -7,31 +7,31 @@ import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
 import { setCredentials } from "@features/slices";
 import { TAvailableRole } from "@utils/constants";
+import { Button } from "@components/general";
 
-// --- Navigation Structure ---
 // Define the links available to the Partner Role
 const PARTNER_NAV_LINKS = [
   {
     name: "Dashboard",
-    path: ROUTES.partner_dashboard, // The index route of the partner dashboard
+    path: ROUTES.partner_executive.root, // The index route of the partner dashboard
     icon: Home,
     description: "View your key metrics and performance overview.",
   },
   {
-    name: "Executives",
-    path: "/partner/executives", // Placeholder path for future executive management
+    name: "Orders",
+    path: ROUTES.partner_executive.orders.root, // Placeholder path for future executive management
     icon: Users,
     description: "Manage and oversee your executive team members.",
   },
   {
     name: "Settings",
-    path: "/partner/settings", // Placeholder path for partner profile settings
+    path: ROUTES.partner_executive.settings, // Placeholder path for partner profile settings
     icon: Settings,
     description: "Update your profile, preferences, and account details.",
   },
 ];
 
-export const Layout: React.FC = () => {
+export const ExecutiveLayout: React.FC = () => {
   const { data: user, isSuccess } = useUserProfileQuery();
 
   const [logout] = useLogoutMutation();
@@ -54,7 +54,7 @@ export const Layout: React.FC = () => {
 
   // Check if we are on the main dashboard index route.
   // We only want to show the large navigation cards on the main dashboard.
-  const isDashboardIndex = location.pathname === ROUTES.partner_dashboard;
+  const isDashboardIndex = location.pathname.includes(ROUTES.partner.dashboard);
 
   // --- Shared Link Component for Mobile Bottom Nav ---
   const MobileNavLinkItem: React.FC<{
@@ -98,6 +98,8 @@ export const Layout: React.FC = () => {
     </NavLink>
   );
 
+  const navigate = useNavigate();
+
   useEffect(() => {
     if (isSuccess && user) {
       console.log("isSuccess && data");
@@ -114,14 +116,18 @@ export const Layout: React.FC = () => {
         <header className="bg-white shadow z-10 sticky top-0">
           <div className="flex justify-between items-center p-4 border-b">
             {/* Branding/Title */}
-            <h1 className="text-xl font-bold text-indigo-700">
-              Partner Portal
-            </h1>
+            <Button
+              variant="ghost"
+              onClick={() => navigate(`/${ROUTES.partner_executive.root}`)}
+              className="text-xl font-bold text-indigo-700"
+            >
+              Executive Portal
+            </Button>
 
             {/* User Info / Logout */}
             <div className="flex items-center space-x-3">
               <span className="text-sm text-gray-500 hidden sm:inline">
-                Partner {user?.name}
+                Executive {user?.name}
               </span>
               <button
                 onClick={handleLogout}
@@ -144,7 +150,7 @@ export const Layout: React.FC = () => {
                 Welcome to your Dashboard
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                {PARTNER_NAV_LINKS.map((link) => (
+                {PARTNER_NAV_LINKS?.map((link) => (
                   <NavCard
                     key={link.path}
                     to={link.path}

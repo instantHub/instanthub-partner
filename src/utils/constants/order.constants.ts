@@ -9,7 +9,7 @@ export enum ORDER_STATUS {
 export enum ASSIGNMENT_STATUS {
   UNASSIGNED = "unassigned",
   PARTNER = "partner",
-  EXECUTIVE = "executive",
+  PARTNER_EXECUTIVE = "partner_executive",
 }
 
 export type TOperation = "Add" | "Subtract";

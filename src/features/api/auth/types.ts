@@ -13,10 +13,19 @@ export interface IPartner {
   email: string;
   phone: string | number;
   role: TAvailableRole;
+  partnerID: string;
+  creator: ICreator;
+  assignedOrders: any;
   permissions: IPermissions[];
   sessionExpiry: number;
   token: string;
   passwordChangedAt: string;
+}
+
+export interface ICreator {
+  id: string;
+  name: string;
+  role: "partner" | "admin";
 }
 
 export interface IPartnerLogoutRequest {

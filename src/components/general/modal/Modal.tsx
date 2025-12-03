@@ -130,7 +130,7 @@ export const Modal: FC<IModalProps> = ({
     >
       {/* Backdrop */}
       <div
-        className="absolute inset-0 bg-black bg-opacity-50 transition-opacity"
+        className="absolute inset-0 bg-black/35 bg-opacity-50 transition-opacity"
         onClick={onClose}
       />
 

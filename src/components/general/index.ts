@@ -7,4 +7,3 @@ export * from "./checkbox";
 export * from "./select";
 export * from "./datepicker";
 export * from "./dropdown";
-export * from "./statsCard";

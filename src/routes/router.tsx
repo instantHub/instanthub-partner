@@ -2,9 +2,9 @@ import { createBrowserRouter as Router, Navigate } from "react-router-dom";
 import { ROUTES } from "./routes";
 
 import * as AUTH_PAGES from "@pages/auth";
-import ProtectedRoute from "src/guards/Protect";
-import { Dashboard } from "@pages/dashboard";
-import { Layout } from "@pages/layout";
+import * as PARTNER from "@pages/partner";
+import * as EXECUTIVE from "@pages/executive";
+import { ExecutiveProtected, PartnerProtected } from "@guards";
 
 export const router = Router([
   {
@@ -18,19 +18,43 @@ export const router = Router([
         path: ROUTES.loginPage,
         element: <AUTH_PAGES.LoginLandingPage />,
       },
+
+      // Partner layout
       {
-        path: ROUTES.partner_dashboard,
+        path: ROUTES.partner.root,
         element: (
-          <ProtectedRoute>
-            <Layout />
-          </ProtectedRoute>
+          <PartnerProtected>
+            <PARTNER.PartnerLayout />
+          </PartnerProtected>
         ),
         children: [
           {
             index: true,
-            element: <Dashboard />,
+            element: <Navigate to={ROUTES.partner.dashboard} replace />,
+          },
+          {
+            path: ROUTES.partner.dashboard,
+            element: <PARTNER.Dashboard />,
+          },
+          {
+            path: ROUTES.partner.settings,
+            element: <PARTNER.Settings />,
+          },
+          {
+            path: ROUTES.partner.executives.root,
+            element: <PARTNER.Executives />,
           },
         ],
+      },
+
+      // Executive layout
+      {
+        path: ROUTES.partner_executive.root,
+        element: (
+          <ExecutiveProtected>
+            <EXECUTIVE.ExecutiveLayout />
+          </ExecutiveProtected>
+        ),
       },
     ],
   },

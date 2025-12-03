@@ -31,6 +31,7 @@
       "@pages/*": ["src/pages/*"],
       "@components/*": ["src/components/*"],
       "@features/*": ["src/features/*"],
+      "@guards": ["src/guards/index.ts"],
       "@api": ["src/features/api/index.ts"],
       "@utils/*": ["src/utils/*"],
       "@hooks": ["src/hooks/index.ts"],
