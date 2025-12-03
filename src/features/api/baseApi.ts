@@ -12,6 +12,7 @@ import {
 } from "./orders/constants";
 import { PARTNER_API_TAG } from "./auth/constant";
 import { toast } from "react-toastify";
+import { EXECUTIVE_API_TAG } from "./executives/constant";
 
 // Define error type mapping
 export type CustomError = {
@@ -111,6 +112,7 @@ export const baseApi = createApi({
     ORDER_DETAIL_API_TAG,
     ORDER_STATS_API_TAG,
     UNASSIGNED_ORDERS_TAG,
+    EXECUTIVE_API_TAG,
   ],
   endpoints: () => ({}),
 });
