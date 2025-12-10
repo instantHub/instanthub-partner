@@ -1,31 +1,44 @@
 import React, { useEffect } from "react";
-import { Outlet, NavLink, useLocation, useNavigate } from "react-router-dom";
+import { Outlet, NavLink } from "react-router-dom";
 import { ROUTES } from "@routes";
-import { Home, LogOut, Settings, Users } from "lucide-react";
-import { useLogoutMutation, useUserProfileQuery } from "@features/api";
+import {
+  Calendar,
+  CheckCircle2,
+  Clock,
+  LogOut,
+  Package,
+  Settings,
+  Users,
+  XCircle,
+} from "lucide-react";
+import {
+  useGetOrderStatsQuery,
+  useLogoutMutation,
+  useUserProfileQuery,
+} from "@features/api";
 import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
 import { setCredentials } from "@features/slices";
 import { TAvailableRole } from "@utils/constants";
-import { Button } from "@components/general";
+import { Loading } from "@components/general";
+import { MobileNavLinkItem } from "./MobileNavLinkItem";
+import { MiniStat } from "./components";
 
-// --- Navigation Structure ---
-// Define the links available to the Partner Role
-const PARTNER_NAV_LINKS = [
-  {
-    name: "Dashboard",
-    path: ROUTES.partner.dashboard, // The index route of the partner dashboard
-    icon: Home,
-    description: "View your key metrics and performance overview.",
-  },
+export const PARTNER_NAV_LINKS = [
   {
     name: "Executives",
-    path: "/partner/executives", // Placeholder path for future executive management
+    path: ROUTES.partner.executives.root, // Placeholder path for future executive management
     icon: Users,
     description: "Manage and oversee your executive team members.",
   },
   {
-    name: "Settings",
+    name: "My Orders",
+    path: ROUTES.partner.orders.root, // Placeholder path for future executive management
+    icon: Users,
+    description: "Manage and oversee your executive team members.",
+  },
+  {
+    name: ROUTES.partner.settings,
     path: "/partner/settings", // Placeholder path for partner profile settings
     icon: Settings,
     description: "Update your profile, preferences, and account details.",
@@ -34,13 +47,12 @@ const PARTNER_NAV_LINKS = [
 
 export const PartnerLayout: React.FC = () => {
   const { data: user, isSuccess } = useUserProfileQuery();
+  const { data: statsResponse, isLoading, isError } = useGetOrderStatsQuery();
 
   const [logout] = useLogoutMutation();
-  const location = useLocation();
 
   const dispatch = useDispatch();
 
-  // Placeholder Logout Function
   const handleLogout = async () => {
     try {
       await logout({
@@ -53,54 +65,6 @@ export const PartnerLayout: React.FC = () => {
     } catch (error) {}
   };
 
-  // Check if we are on the main dashboard index route.
-  // We only want to show the large navigation cards on the main dashboard.
-  const isDashboardIndex = location.pathname.includes(ROUTES.partner.dashboard);
-
-  // --- Shared Link Component for Mobile Bottom Nav ---
-  const MobileNavLinkItem: React.FC<{
-    to: string;
-    icon: React.ElementType;
-    label: string;
-  }> = ({ to, icon: Icon, label }) => (
-    <NavLink
-      to={to}
-      className={({ isActive }) =>
-        `flex flex-col items-center justify-center p-2 w-full transition duration-150 text-xs ${
-          isActive
-            ? "text-indigo-700 font-semibold"
-            : "text-gray-500 hover:text-indigo-600"
-        }`
-      }
-    >
-      <Icon className="w-5 h-5 mb-0.5" />
-      <span>{label}</span>
-    </NavLink>
-  );
-
-  // --- Card Component for Desktop/Tablet Navigation ---
-  const NavCard: React.FC<{
-    to: string;
-    icon: React.ElementType;
-    label: string;
-    description: string;
-  }> = ({ to, icon: Icon, label, description }) => (
-    <NavLink
-      to={to}
-      className="block p-5 bg-white rounded-xl shadow-md hover:shadow-lg transition duration-300 transform hover:scale-[1.02] border border-gray-100 hover:border-indigo-400"
-    >
-      <div className="flex items-start">
-        <Icon className="w-8 h-8 text-indigo-600 mr-4 mt-1" />
-        <div>
-          <h2 className="text-lg font-bold text-gray-800 mb-1">{label}</h2>
-          <p className="text-sm text-gray-500">{description}</p>
-        </div>
-      </div>
-    </NavLink>
-  );
-
-  const navigate = useNavigate();
-
   useEffect(() => {
     if (isSuccess && user) {
       console.log("isSuccess && data");
@@ -109,62 +73,91 @@ export const PartnerLayout: React.FC = () => {
     }
   }, [isSuccess, user, dispatch]);
 
+  if (isLoading) return <Loading />;
+
+  if (isError || !statsResponse?.data) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
+        <div className="text-center">
+          <XCircle className="w-12 h-12 text-red-500 mx-auto mb-3" />
+          <h3 className="font-bold text-gray-900">Failed to load data</h3>
+          <p className="text-sm text-gray-500">Please try again later</p>
+        </div>
+      </div>
+    );
+  }
+
+  const { data } = statsResponse;
+
   return (
     <div className="flex min-h-screen bg-gray-50">
       {/* 1. Main Content Wrapper */}
       <div className="flex-1 flex flex-col overflow-hidden">
         {/* Top Header (Sticky) */}
-        <header className="bg-white shadow z-10 sticky top-0">
-          <div className="flex justify-between items-center p-4 border-b">
-            {/* Branding/Title */}
-            <Button
-              variant="ghost"
-              onClick={() => navigate(`/${ROUTES.partner.root}`)}
-              className="text-xl font-bold text-indigo-700"
+        <header className="bg-linear-to-br from-indigo-600 via-indigo-700 to-purple-800 px-4 pt-8 pb-16 rounded-b-4xl">
+          <div className="flex items-center justify-between mb-6">
+            <NavLink
+              to={ROUTES.partner.dashboard}
+              className="text-xl sm:text-2xl font-black text-white"
             >
               Partner Portal
-            </Button>
+            </NavLink>
 
-            {/* User Info / Logout */}
-            <div className="flex items-center space-x-3">
-              <span className="text-sm text-gray-500 hidden sm:inline">
-                Partner {user?.name}
-              </span>
-              <button
-                onClick={handleLogout}
-                className="flex items-center text-sm text-red-600 hover:text-red-700 border border-transparent hover:border-red-300 px-3 py-1 rounded-full transition"
-                title="Logout"
-              >
-                <LogOut className="w-4 h-4 mr-1 sm:mr-1" />
-                <span className="hidden sm:inline">Logout</span>
-              </button>
+            <div className="text-white flex gap-2 sm:gap-5 items-start">
+              {PARTNER_NAV_LINKS.map((link, i) => (
+                <>
+                  <NavLink to={link.path} className="text-base">
+                    {link.name}
+                  </NavLink>
+                  <span>|</span>
+                </>
+              ))}
+              <p className="text-base">Logout</p>
             </div>
           </div>
+
+          {/* Main Stat Card - Active Orders */}
+          <StatCard
+            label="My Active Orders"
+            value={data.myWork.active}
+            icon={<Package className="w-6 h-6 text-white" />}
+            gradient="bg-gradient-to-br from-white/20 to-white/5 border border-white/20"
+            iconBg="bg-white/20"
+          />
         </header>
 
-        {/* 2. Content Area */}
-        <main className="flex-1 overflow-y-auto p-4 sm:p-6 pb-20 lg:pb-6">
-          {/* Card-Based Navigation (Visible only on the main dashboard index) */}
-          {isDashboardIndex && (
-            <>
-              <h2 className="text-2xl font-bold text-gray-800 mb-6">
-                Welcome to your Dashboard
-              </h2>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                {PARTNER_NAV_LINKS.map((link) => (
-                  <NavCard
-                    key={link.path}
-                    to={link.path}
-                    icon={link.icon}
-                    label={link.name}
-                    description={link.description}
-                  />
-                ))}
-              </div>
-              <hr className="my-8" />
-            </>
-          )}
+        {/* Stats Grid - Overlapping Header */}
+        <div className="px-4 -mt-6">
+          <div className="grid grid-cols-4 gap-3">
+            <MiniStat
+              label="Total Completed"
+              value={data.myWork.completed}
+              icon={<CheckCircle2 className="w-4 h-4 text-emerald-600" />}
+              color="bg-emerald-50"
+            />
+            <MiniStat
+              label="Today's completed"
+              value={data.today.myActive}
+              icon={<Calendar className="w-4 h-4 text-blue-600" />}
+              color="bg-blue-50"
+            />
+            <MiniStat
+              label="Total Pending"
+              value={data.tomorrow.myAssigned}
+              icon={<Clock className="w-4 h-4 text-purple-600" />}
+              color="bg-purple-50"
+            />
+            <MiniStat
+              label="Total Cancelled"
+              value={data.tomorrow.myAssigned}
+              icon={<Clock className="w-4 h-4 text-purple-600" />}
+              color="bg-purple-50"
+            />
+          </div>
+        </div>
 
+        {/* 2. Content Area */}
+        <main className="flex-1 overflow-y-auto p- sm:p- pb-20 lg:pb-6">
           {/* Nested Route Content */}
           <Outlet />
         </main>
@@ -202,3 +195,36 @@ export const PartnerLayout: React.FC = () => {
     </div>
   );
 };
+
+interface StatCardProps {
+  label: string;
+  value: number;
+  icon: React.ReactNode;
+  gradient: string;
+  iconBg: string;
+}
+
+const StatCard: React.FC<StatCardProps> = ({
+  label,
+  value,
+  icon,
+  gradient,
+  iconBg,
+}) => (
+  <div
+    className={`relative overflow-hidden rounded-2xl p-4 ${gradient} shadow-sm`}
+  >
+    <div className="flex items-start justify-between">
+      <div>
+        <p className="text-xs font-medium text-white/80 uppercase tracking-wider">
+          {label}
+        </p>
+        <h3 className="text-3xl font-black text-white mt-1">{value}</h3>
+      </div>
+      <div className={`p-2.5 rounded-xl ${iconBg}`}>{icon}</div>
+    </div>
+    {/* Decorative circles */}
+    <div className="absolute -bottom-4 -right-4 w-20 h-20 rounded-full bg-white/10" />
+    <div className="absolute -bottom-8 -right-8 w-24 h-24 rounded-full bg-white/5" />
+  </div>
+);

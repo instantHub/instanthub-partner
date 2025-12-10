@@ -5,6 +5,7 @@ import {
   FetchArgs,
 } from "@reduxjs/toolkit/query/react";
 import {
+  MY_ORDERS_API_TAG,
   ORDER_DETAIL_API_TAG,
   ORDER_STATS_API_TAG,
   ORDERS_API_TAG,
@@ -113,6 +114,7 @@ export const baseApi = createApi({
     ORDER_STATS_API_TAG,
     UNASSIGNED_ORDERS_TAG,
     EXECUTIVE_API_TAG,
+    MY_ORDERS_API_TAG,
   ],
   endpoints: () => ({}),
 });

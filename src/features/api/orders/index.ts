@@ -1,6 +1,16 @@
 import { baseApi } from "@features/api";
-import { ORDER_API_PATHS, UNASSIGNED_ORDERS_TAG } from "./constants";
-import { IAssignmentStatus, IOrder, IUnAssignedOrdersResponse } from "./types";
+import {
+  MY_ORDERS_API_TAG,
+  ORDER_API_PATHS,
+  ORDER_STATS_API_TAG,
+  UNASSIGNED_ORDERS_TAG,
+} from "./constants";
+import {
+  IAssignmentStatus,
+  IOrder,
+  IPartnerOrderStats,
+  IUnAssignedOrdersResponse,
+} from "./types";
 import { IPartner } from "../auth/types";
 
 export const orders = baseApi.injectEndpoints({
@@ -12,17 +22,30 @@ export const orders = baseApi.injectEndpoints({
       }),
       providesTags: [UNASSIGNED_ORDERS_TAG],
     }),
-    getMyAssignedOrders: build.query<IOrder[], void>({
-      query: () => ({
-        url: ORDER_API_PATHS.MY_ORDERS,
-        method: "GET",
-      }),
-      providesTags: [],
+    getMyAssignedOrders: build.query<{ message: string; data: IOrder[] }, void>(
+      {
+        query: () => ({
+          url: ORDER_API_PATHS.MY_ORDERS,
+          method: "GET",
+        }),
+        providesTags: [MY_ORDERS_API_TAG],
+      }
+    ),
+
+    getOrderStats: build.query<IPartnerOrderStats, void>({
+      query: () => `${ORDER_API_PATHS.BASE}/stats`,
+      providesTags: [ORDER_STATS_API_TAG],
+      // Refetch on mount and focus
+      keepUnusedDataFor: 60, // Cache for 60 seconds
     }),
+
     assignOrderToPartner: build.mutation<
       { message: string; partner: IPartner },
       {
-        orderId: string;
+        _orderId: string;
+        _userId: string;
+        userRole: string;
+        assignmentStatus: IAssignmentStatus;
       }
     >({
       query: (data) => ({
@@ -34,7 +57,24 @@ export const orders = baseApi.injectEndpoints({
         },
         body: data,
       }),
-      invalidatesTags: [UNASSIGNED_ORDERS_TAG],
+      invalidatesTags: [ORDER_STATS_API_TAG, MY_ORDERS_API_TAG],
+    }),
+
+    unassignOrder: build.mutation<
+      { message: string; order: IOrder },
+      {
+        _orderId: string;
+      }
+    >({
+      query: ({ _orderId }) => ({
+        url: ORDER_API_PATHS.UNASSIGN_ORDER(_orderId),
+        method: "PATCH",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }),
+      invalidatesTags: [ORDER_STATS_API_TAG, MY_ORDERS_API_TAG],
     }),
   }),
 });
@@ -42,5 +82,7 @@ export const orders = baseApi.injectEndpoints({
 export const {
   useGetOrdersByLocationQuery,
   useGetMyAssignedOrdersQuery,
+  useGetOrderStatsQuery,
   useAssignOrderToPartnerMutation,
+  useUnassignOrderMutation,
 } = orders;

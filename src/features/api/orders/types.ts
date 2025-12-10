@@ -1,10 +1,4 @@
-import {
-  ASSIGNMENT_STATUS,
-  ORDER_STATUS,
-  TOperation,
-  AVAILABLE_ROLE,
-  TAvailableRole,
-} from "@utils/constants";
+import { ORDER_STATUS, TOperation, TAvailableRole } from "@utils/constants";
 
 /**
  * UnAssigned Order details
@@ -41,73 +35,97 @@ export interface IUnAssignedOrder {
 /**
  * Full Order details
  */
+// export interface IOrder {
+//   id: string;
+//   orderId: string;
+//   customer: ICustomerDetails;
+//   product: IProductDetails;
+//   device: IDeviceInfo;
+//   status: ORDER_STATUS;
+//   isOverdue: boolean;
+//   scheduledDate: string;
+//   timeSlot: string;
+//   offerPrice: number;
+//   finalPrice: number;
+//   paymentMode: string;
+//   assignment: IAssignmentDetails;
+//   reschedule: IRescheduleDetails;
+//   cancellation: ICancellationDetails | null;
+//   createdAt: string;
+//   completedAt: string | null;
+// }
 
 export interface IOrder {
   id: string;
   orderId: string;
-  customer: ICustomerDetails;
-  product: IProductDetails;
-  device: IDeviceInfo;
+
+  productDetails: {
+    productCategory: string;
+    productBrand: string;
+    productName: string;
+    variant: {
+      variantName: string;
+      price: number;
+    };
+  };
+  deviceInfo: IDeviceInfo;
+
+  customerDetails: {
+    name: string;
+    phone: number;
+    email: string;
+    addressDetails: IAddress;
+  };
+
+  finalDeductionSet: IFinalDeductionSet[];
+
+  customerIDProof: {
+    front: string;
+    back: string;
+    optional1: string;
+    optional2: string;
+  };
+
+  schedulePickUp: {
+    date: Date;
+    timeSlot: string;
+  };
+
+  schedulePickUpRaw?: string;
+  completedAt: Date;
+
   status: ORDER_STATUS;
-  isOverdue: boolean;
-  scheduledDate: string;
-  timeSlot: string;
+
+  assignmentStatus: IAssignmentStatus;
+  rescheduleStatus: IRescheduleStatus;
+
+  cancellationDetails: ICancellationDetails;
+
+  paymentMode: string;
   offerPrice: number;
   finalPrice: number;
-  paymentMode: string;
-  assignment: IAssignmentDetails;
-  reschedule: IRescheduleDetails;
-  cancellation: ICancellationDetails | null;
+
   createdAt: string;
-  completedAt: string | null;
-}
-
-export interface ICustomerDetails {
-  name: string;
-  email: string;
-  phone: string;
-  address: string;
-  city: string;
-  state: string;
-  pinCode: string;
-}
-
-export interface IProductDetails {
-  name: string;
-  brand: string;
-  category: string;
-  variant: string;
-  variantPrice: number;
-}
-
-export interface IAssignmentDetails {
-  isAssigned: boolean;
-  assignedTo: string | null;
-  assignedToPhone: string | null;
-  assignedToRole: string | null;
-  assignedAt: string | null;
-  assignedBy: string | null;
-}
-
-export interface IRescheduleDetails {
-  isRescheduled: boolean;
-  rescheduleCount: number;
-  rescheduleReason: string | null;
-  lastRescheduledDate: string | null;
-}
-
-export interface ICancellationDetails {
-  cancelledBy: string | null;
-  cancelReason: string | null;
-  cancelledAt: string | null;
+  updatedAt: string;
 }
 
 export interface IDeviceInfo {
-  serialNumber: string;
-  imeiNumber: string;
+  serialNumber?: string;
+  imeiNumber?: string;
 }
 
-// Actual BE stored assignment model
+export interface IAddress {
+  address: string;
+  state: string;
+  city: string;
+  pinCode: string;
+}
+
+export interface IFinalDeductionSet {
+  type: string;
+  conditions: IFDSetCondition[];
+}
+
 export interface IAssignmentStatus {
   assigned: boolean;
   assignedAt: string;
@@ -115,6 +133,7 @@ export interface IAssignmentStatus {
   assignedTo: {
     name: string;
     phone: string;
+    id: string;
     role: TAvailableRole;
   };
   assignedBy: {
@@ -123,11 +142,22 @@ export interface IAssignmentStatus {
   };
 }
 
-// Unknown yet
-export interface IFinalDeductionSet {
-  type: string;
-  conditions: IFDSetCondition[];
+export interface IRescheduleStatus {
+  rescheduled: boolean;
+  rescheduledBy: string;
+  rescheduleReason: string;
+  rescheduleCount: number;
+  lastRescheduledDate: Date;
+  previousScheduledDates: Array<Date>;
 }
+
+export interface ICancellationDetails {
+  cancelledBy: string;
+  cancelReason: string;
+  cancelledAt: string;
+}
+
+// Unknown yet
 
 export interface IFDSetCondition {
   conditionLabel: string;
@@ -245,3 +275,28 @@ export interface IApiResponse<T> {
   data: T;
   message?: string;
 }
+
+export interface IPartnerOrderStats {
+  success: boolean;
+  data: {
+    myWork: {
+      active: number;
+      completed: number;
+      cancelled: number;
+    };
+    available: {
+      total: IOrder[];
+    };
+    today: {
+      myActive: number;
+      myCompleted: number;
+      available: IOrder[];
+    };
+    tomorrow: {
+      myAssigned: number;
+      available: IOrder[];
+    };
+  };
+}
+
+export type TFilterTab = "all" | "today" | "tomorrow";

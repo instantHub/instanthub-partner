@@ -37,12 +37,16 @@ export const router = Router([
             element: <PARTNER.Dashboard />,
           },
           {
-            path: ROUTES.partner.settings,
-            element: <PARTNER.Settings />,
-          },
-          {
             path: ROUTES.partner.executives.root,
             element: <PARTNER.Executives />,
+          },
+          {
+            path: ROUTES.partner.orders.root,
+            element: <PARTNER.MyOrders />,
+          },
+          {
+            path: ROUTES.partner.settings,
+            element: <PARTNER.Settings />,
           },
         ],
       },
